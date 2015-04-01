@@ -1,0 +1,52 @@
+{
+  "name": "react-suitcss-mixin",
+  "version": "0.0.4",
+  "description": "A React component mixin to generate CSS class names that conform to SUIT CSS naming conventions.",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "babel ./index.js -d ./dist",
+    "demo": "browserify ./demo/demo.js -t babelify -o ./dist/demo.js && open ./demo/index.html",
+    "prepublish": "npm run test",
+    "test": "npm run build && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brentertz/react-suitcss-mixin.git"
+  },
+  "keywords": [
+    "react",
+    "mixin",
+    "suitcss",
+    "suit",
+    "css"
+  ],
+  "author": "Brent Ertz <brent.ertz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brentertz/react-suitcss-mixin/issues"
+  },
+  "homepage": "https://github.com/brentertz/react-suitcss-mixin",
+  "dependencies": {
+    "object-assign": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel": "^4.7.16",
+    "babel-jest": "^4.0.0",
+    "babelify": "^6.0.0",
+    "browserify": "^9.0.4",
+    "classnames": "^1.2.0",
+    "jest-cli": "^0.4.0",
+    "react": "^0.13.1"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "testPathIgnorePatterns": [
+      "node_modules"
+    ],
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/classnames",
+      "<rootDir>/node_modules/object-assign"
+    ]
+  }
+}
