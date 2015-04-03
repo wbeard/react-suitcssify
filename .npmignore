@@ -1,1 +1,7 @@
 coverage
+demo
+dist/demo.js
+__tests__
+.gitignore
+.jshintrc
+.npmignore
