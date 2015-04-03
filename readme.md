@@ -52,6 +52,12 @@ Browse the [demo files](https://github.com/brentertz/react-suitcss-mixin/blob/ma
 npm run demo
 ```
 
+## Build
+
+```
+npm run build
+```
+
 ## Tests
 
 ```
