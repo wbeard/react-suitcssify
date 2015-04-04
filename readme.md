@@ -5,7 +5,6 @@ A React component mixin to generate CSS class names that conform to [SUIT CSS na
 This mixin provides several primary functions.
 
 1. Provide a general purpose `getClassName` method that accepts a variety of options for generating SUIT CSS conformant class names.  This method accepts an optional parameter that may contain any of the following options.
-
   * __namespace__ - Defaults to component's `namespace` property
   * __componentName__ - Defaults to component's `displayName` property
   * __descendantName__
@@ -70,4 +69,5 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 0.0.5 - Use Object.assign polyfill from react/lib. Update .npmignore and readme.
 * 0.0.4 - Initial release
