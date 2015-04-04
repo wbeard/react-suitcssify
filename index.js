@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import objectAssign from 'object-assign';
+import assign from 'react/lib/Object.assign';
 
 function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -71,7 +71,7 @@ let SuitCss = {
       utilities: config.descendantName ? null : this.props.utilities || null
     };
 
-    let options = objectAssign({}, defaults, config);
+    let options = assign({}, defaults, config);
 
     let classNames = [
       getBaseClassName(options)

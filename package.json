@@ -1,6 +1,6 @@
 {
   "name": "react-suitcss-mixin",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A React component mixin to generate CSS class names that conform to SUIT CSS naming conventions.",
   "main": "./dist/index.js",
   "scripts": {
@@ -26,9 +26,6 @@
     "url": "https://github.com/brentertz/react-suitcss-mixin/issues"
   },
   "homepage": "https://github.com/brentertz/react-suitcss-mixin",
-  "dependencies": {
-    "object-assign": "^2.0.0"
-  },
   "devDependencies": {
     "babel": "^4.7.16",
     "babel-jest": "^4.0.0",
