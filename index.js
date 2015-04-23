@@ -15,7 +15,7 @@ function camelize(string) {
 
 function getBaseClassName(options={}) {
   let baseClassName;
-  let componentName = capitalize(options.componentName);
+  let componentName = capitalize(camelize(options.componentName));
 
   baseClassName = options.namespace ? `${options.namespace}-${componentName}` : componentName;
   baseClassName = options.descendantName ? `${baseClassName}-${camelize(options.descendantName)}` : baseClassName;

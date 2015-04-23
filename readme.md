@@ -69,5 +69,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 1.0.0 - Camelize and capitalize componentName
 * 0.0.5 - Use Object.assign polyfill from react/lib. Update .npmignore and readme.
 * 0.0.4 - Initial release
