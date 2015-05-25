@@ -4,7 +4,7 @@ jest.dontMock('../index');
 
 import React from 'react/addons';
 let { TestUtils } = React.addons;
-import SuitCss from '../index';
+var SuitCss = require('../index');
 
 let ComponentFactory = {
   build(options={}) {
@@ -31,7 +31,7 @@ describe('SuitCss', () => {
       /* jshint ignore:end */
     );
     let component = TestUtils.renderIntoDocument(jsx);
-    //console.log(React.renderToString(jsx));
+    //console.log(React.renderToStaticMarkup(jsx));
     return component;
   };
 

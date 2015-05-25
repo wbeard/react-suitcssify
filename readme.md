@@ -12,7 +12,7 @@ This mixin provides several primary functions.
   * __states__
   * __utilities__ - Defaults to values from `this.props.utilities`
 2. Allow generic utility classes to be passed in from a utilities prop.
-3. Allow arbitrary CSS class names to be added using the standard React className prop.  This capability is provided primarily for supporting legacy code.  Its use is discouraged as it essentially allows one to bypass conventions.
+3. Allow arbitrary CSS class names to be added using the standard React className prop.
 
 ## Installation
 
@@ -69,6 +69,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 1.0.1 - Update dependencies. Fix test mock. Update readme.
 * 1.0.0 - Camelize and capitalize componentName
 * 0.0.5 - Use Object.assign polyfill from react/lib. Update .npmignore and readme.
 * 0.0.4 - Initial release
