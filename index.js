@@ -64,7 +64,7 @@ let SuitCss = {
   getClassName(config={}) {
     let defaults = {
       namespace: this.namespace || null,
-      componentName: this.constructor.displayName,
+      componentName: this.constructor.displayName || this.constructor.name,
       descendantName: null,
       modifiers: null,
       states: null,
