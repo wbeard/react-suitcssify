@@ -68,7 +68,7 @@ let SuitCss = {
       descendantName: null,
       modifiers: null,
       states: null,
-      utilities: config.descendantName ? null : this.props.utilities || null
+      utilities: config.descendantName ? null : (this.props.hasOwnProperty('utilities') && this.props.utilities) || null
     };
 
     let options = assign({}, defaults, config);
