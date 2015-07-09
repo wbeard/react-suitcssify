@@ -1,21 +1,23 @@
 {
-  "name": "react-suitcss-mixin",
-  "version": "1.0.1",
-  "description": "A React component mixin to generate CSS class names that conform to SUIT CSS naming conventions.",
+  "name": "react-suitcssify",
+  "version": "2.0.0",
+  "description": "A React component utility to generate CSS class names that conform to SUIT CSS naming conventions.",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "babel ./index.js -d ./dist",
-    "demo": "browserify ./demo/demo.js -t babelify -o ./dist/demo.js && open ./demo/index.html",
-    "prepublish": "npm run test",
-    "test": "npm run build && jest"
+    "clean": "rm -rf ./dist/**",
+    "build": "npm run clean && $(npm bin)/babel ./index.js --source-maps --out-dir ./dist && $(npm bin)/babel ./lib --source-maps --out-dir ./dist/lib",
+    "demo": "$(npm bin)/browserify ./demo/demo.js -t babelify -o ./dist/demo.js && open ./demo/index.html",
+    "lint": "$(npm bin)/eslint .",
+    "prepublish": "npm run build",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brentertz/react-suitcss-mixin.git"
+    "url": "https://github.com/brentertz/react-suitcssify.git"
   },
   "keywords": [
     "react",
-    "mixin",
+    "react-component",
     "suitcss",
     "suit",
     "css"
@@ -23,15 +25,21 @@
   "author": "Brent Ertz <brent.ertz@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brentertz/react-suitcss-mixin/issues"
+    "url": "https://github.com/brentertz/react-suitcssify/issues"
   },
-  "homepage": "https://github.com/brentertz/react-suitcss-mixin",
+  "homepage": "https://github.com/brentertz/react-suitcssify",
+  "peerDependencies": {
+    "react": "^0.13.0"
+  },
   "devDependencies": {
     "babel": "^5.4.7",
+    "babel-eslint": "^3.1.23",
     "babel-jest": "^5.2.0",
     "babelify": "^6.1.1",
     "browserify": "^10.2.1",
     "classnames": "^2.1.1",
+    "eslint": "^0.24.0",
+    "eslint-plugin-react": "^2.6.4",
     "jest-cli": "^0.4.5",
     "react": "^0.13.3"
   },

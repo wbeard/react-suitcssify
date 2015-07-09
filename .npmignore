@@ -1,7 +1,12 @@
-coverage
-demo
-dist/demo.js
-__tests__
+/__tests__
+/coverage
+/demo
+/dist/demo.js
+/lib
+.babelrc
+.eslintignore
+.eslintrc
 .gitignore
-.jshintrc
 .npmignore
+*.tgz
+/index.js

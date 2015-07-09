@@ -1,3 +1,7 @@
+html {
+  font-size: 62.5%;
+}
+
 /* Global utilities */
 
 .u-pullLeft {
@@ -12,8 +16,13 @@
 
 .Button {
   border: 1px solid;
-  border-radius: 5px;
+  border-radius: 0.5rem;
 }
+
+.Button + .Button {
+  margin-left: 1rem;
+}
+
 
 /* Button component modifiers */
 
@@ -29,24 +38,24 @@
 }
 
 .Button--large {
-  font-size: 16px;
-  padding: 10px 20px;
+  font-size: 1.6rem;
+  padding: 1rem 2rem;
 }
 
 .Button--medium {
-  font-size: 14px;
-  padding: 5px 10px;
+  font-size: 1.4rem;
+  padding: 0.5rem 1rem;
 }
 
 .Button--small {
-  font-size: 10px;
-  padding: 2px 5px;
+  font-size: 1rem;
+  padding: 0.2rem 0.5rem;
 }
 
 /* Button component descendants */
 
 .Button-text {
-  font-family: monospace;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 /* Button component states */
@@ -58,5 +67,5 @@
 /* Other demo styles */
 
 .group {
-  margin: 20px 0;
+  margin: 2rem 0;
 }

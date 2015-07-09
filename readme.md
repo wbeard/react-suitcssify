@@ -1,33 +1,65 @@
-# react-suitcss-mixin
+# react-suitcssify
 
-A React component mixin to generate CSS class names that conform to [SUIT CSS naming conventions](https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md).
+A React component utility to generate CSS class names that conform to [SUIT CSS naming conventions](https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md).
 
-This mixin provides several primary functions.
+__This utility can be used as a decorator, mixin, or utility function__.
+This means that you can use it with React components defined as ES6 classes.
 
-1. Provide a general purpose `getClassName` method that accepts a variety of options for generating SUIT CSS conformant class names.  This method accepts an optional parameter that may contain any of the following options.
-  * __namespace__ - Defaults to component's `namespace` property
-  * __componentName__ - Defaults to component's `displayName` property
-  * __descendantName__
-  * __modifiers__
-  * __states__
-  * __utilities__ - Defaults to values from `this.props.utilities`
-2. Allow generic utility classes to be passed in from a utilities prop.
-3. Allow arbitrary CSS class names to be added using the standard React className prop.
+Provides a general purpose `getClassName(options)` method that accepts a variety of options for generating SUIT CSS conformant class names.
+
+```JavaScript
+getClassName({
+  className: string,
+  componentName: string,
+  descendantName: string,
+  modifiers: string,
+  namespace: string,
+  states: string,
+  utilities: string
+})
+```
+
+When using the decorator or mixin approach, the following sensible defaults are provided.
+
+* __className__  - `Component.props.className`  _Note that `Component.propTypes.className` is also added for convenience._
+* __componentName__ - `Component.constructor.displayName || Component.constructor.name`
+* __namespace__ - `Component.namespace`
+* __utilities__ - `Component.props.utilities`  _Note that `Component.propTypes.utilities` is also added for convenience._
+
 
 ## Installation
 
 ```
-npm install react-suitcss-mixin
+npm install react-suitcssify
 ```
 
-## Basic Usage
+## Usage
+
+#### ES6 class with a decorator
 
 ```JavaScript
-var React = require('react');
-var SuitCss = require('react-suitcss-mixin');
+import React from 'react';
+import SuitCssify from 'react-suitcssify';
 
-var MyComponent = React.createClass({
-  mixins: [SuitCss],
+@SuitCssify.decorator
+MyComponent extends React.Component{
+  render: function() {
+    return <div className={ this.getClassName() }></div>
+  }
+}
+
+React.render(<MyComponent/>, document.body);
+```
+* _NOTE: Your codebase must support ES7 decorators to use this synax.  Alternatively, simply use the decorator as a wrapper function to achieve the same effect._
+
+#### As a mixin
+
+```JavaScript
+import React from 'react';
+import SuitCssify from 'react-suitcssify';
+
+const MyComponent = React.createClass({
+  mixins: [SuitCssify.mixin],
 
   render: function() {
     return <div className={ this.getClassName() }></div>
@@ -37,15 +69,81 @@ var MyComponent = React.createClass({
 React.render(<MyComponent/>, document.body);
 ```
 
-Renders as:
+#### As a utility method
+
+```JavaScript
+import React from 'react';
+import SuitCssify from 'react-suitcssify';
+
+const getClassName = SuitCssify.utility;
+
+const MyComponent = React.createClass({
+  render: function() {
+    return <div className={ getClassName({ componentName: 'MyComponent' }) }></div>
+  }
+});
+
+React.render(<MyComponent/>, document.body);
+```
+
+
+Each of the above render as:
 
 ```html
 <div class="MyComponent"></div>
 ```
 
-## Advanced Usage
+## Examples
 
-Browse the [demo files](https://github.com/brentertz/react-suitcss-mixin/blob/master/demo) or just run the demo.
+#### Assuming we have the following component
+
+```HTML
+<Component />
+```
+
+#### We should expect the following output.
+
+```JavaScript
+getClassName() -----> 'Component'
+
+getClassName({ componentName: 'AwesomeComponent' }) -----> 'AwesomeComponent'
+
+getClassName({ namespace: 'my' }) -----> 'my-Component'
+
+getClassName({ modifiers: 'foo bar' }) -----> 'Component Component--foo Component--bar'
+
+getClassName({ states: 'active' }) -----> 'Component isActive'
+
+getClassName({ utilities: 'floatRight' }) -----> 'Component u-floatRight'
+
+getClassName({ className: 'arbitrary' }) -----> 'Component arbitrary'
+
+getClassName({ descendantName: 'title' }) -----> 'Component Component-title'
+
+getClassName({
+  className: 'arbitrary',
+  componentName: 'AwesomeComponent',
+  modifiers: 'foo bar',
+  namespace: 'my',
+  states: 'active',
+  utilities: 'floatRight'
+}) -----> 'my-AwesomeComponent my-AwesomeComponent--foo my-AwesomeComponent--bar is-active u-floatRight arbitrary'
+
+getClassName({
+  componentName: 'AwesomeComponent',
+  namespace: 'my',
+  modifiers: 'foo bar',
+  states: 'active',
+  utilities: 'floatRight',
+  className: 'arbitrary',
+  descendantName: 'child'
+}) -----> 'my-AwesomeComponent-child my-AwesomeComponent-child--foo my-AwesomeComponent-child--bar is-active u-floatRight arbitrary'
+
+```
+
+For more examples, browse the [demo files](https://github.com/brentertz/react-suitcss-mixin/blob/master/demo) or just run the demo.
+
+## Demo
 
 ```
 npm run demo
@@ -69,6 +167,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2.0.0 - Extend capabilities for use as decorator, mixin, or utility method. Project renamed to react-suitcssify.  To upgrade, simply change the import/require to use the desired type (decorator, mixin, or utility) as shown in the usage section above.
 * 1.0.1 - Update dependencies. Fix test mock. Update readme.
 * 1.0.0 - Camelize and capitalize componentName
 * 0.0.5 - Use Object.assign polyfill from react/lib. Update .npmignore and readme.
