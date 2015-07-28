@@ -112,7 +112,7 @@ getClassName({ namespace: 'my' }) -----> 'my-Component'
 
 getClassName({ modifiers: 'foo bar' }) -----> 'Component Component--foo Component--bar'
 
-getClassName({ states: 'active' }) -----> 'Component isActive'
+getClassName({ states: 'active' }) -----> 'Component is-active'
 
 getClassName({ utilities: 'floatRight' }) -----> 'Component u-floatRight'
 
