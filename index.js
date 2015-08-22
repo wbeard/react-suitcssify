@@ -5,9 +5,9 @@ import mixin from './lib/mixin';
 import utility from './lib/utility';
 
 const SuitCssify = {
-  decorator: decorator,
-  mixin: mixin,
-  utility: utility
+  decorator,
+  mixin,
+  utility
 };
 
 export default SuitCssify;
