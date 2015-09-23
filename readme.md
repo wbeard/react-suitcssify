@@ -167,6 +167,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 2.0.2 - Add extra this.props check when using as utility.
 * 2.0.1 - Remove React as peer dependency.
 * 2.0.0 - Extend capabilities for use as decorator, mixin, or utility method. Project renamed to react-suitcssify.  To upgrade, simply change the import/require to use the desired type (decorator, mixin, or utility) as shown in the usage section above.
 * 1.0.1 - Update dependencies. Fix test mock. Update readme.
