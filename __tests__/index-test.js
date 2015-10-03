@@ -12,7 +12,7 @@ const UTILITY = 2;
 
 /* eslint-disable react/no-multi-comp, no-shadow, no-unused-vars */
 const ComponentFactory = {
-  build(kind, options={}) {
+  build(kind, options={}, descendantOptions={}) {
     let Component;
 
     switch(kind) {
@@ -21,11 +21,12 @@ const ComponentFactory = {
         class Component extends React.Component{
           render() {
             return (
-              <div className={ this.getClassName(options) } />
+              <div className={ this.getClassName(options) }>
+                <span ref="descendant" className={ this.getClassName(descendantOptions) }></span>
+              </div>
             );
           }
         }
-
         break;
 
       case MIXIN:
@@ -33,7 +34,9 @@ const ComponentFactory = {
           mixins: [SuitCssify.mixin],
           render() {
             return (
-              <div className={ this.getClassName(options) } />
+              <div className={ this.getClassName(options) }>
+                <span ref="descendant" className={ this.getClassName(descendantOptions) }></span>
+              </div>
             );
           }
         });
@@ -44,7 +47,9 @@ const ComponentFactory = {
         Component = React.createClass({
           render() {
             return (
-              <div className={ getClassName(options) } />
+              <div className={ getClassName(options) }>
+                <span ref="descendant" className={ getClassName(descendantOptions) }></span>
+              </div>
             );
           }
         });
@@ -66,7 +71,7 @@ function renderComponent(Component, props={}) {
 }
 
 describe('SuitCssify', () => {
-  let Component, component, className;
+  let Component, component, className, descendantClassName;
 
   it('includes getClassName method', () => {
     Component = ComponentFactory.build(DECORATOR);
@@ -270,8 +275,6 @@ describe('SuitCssify', () => {
     expect(className).toMatch(/u-utilityTwo/);
   });
 
-  it('does not apply utilities props to descendants');
-
   it('allows arbitrary class names to be set', () => {
     Component = ComponentFactory.build(DECORATOR);
     component = renderComponent(Component, {
@@ -294,5 +297,132 @@ describe('SuitCssify', () => {
     component = renderComponent(Component);
     className = React.findDOMNode(component).className;
     expect(className).toMatch(/arbitrary/);
+  });
+
+  describe('descendants', () => {
+    it('do not automatically inherit parent utilities', () => {
+      Component = ComponentFactory.build(DECORATOR, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+
+      Component = ComponentFactory.build(MIXIN, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+
+      Component = ComponentFactory.build(UTILITY, {
+        componentName: 'Component',
+        utilities: 'utility-one utility-two'
+      }, {
+        componentName: 'Component',
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+    });
+
+    it('can assign own utilities', () => {
+      Component = ComponentFactory.build(DECORATOR, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant',
+        utilities: 'utility-three'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
+
+      Component = ComponentFactory.build(MIXIN, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant',
+        utilities: 'utility-three'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
+
+      Component = ComponentFactory.build(UTILITY, {
+        componentName: 'Component',
+        utilities: 'utility-one utility-two'
+      }, {
+        componentName: 'Component',
+        descendantName: 'descendant',
+        utilities: 'utility-three'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
+    });
+
+    it('do not automatically inherit parent className', () => {
+      Component = ComponentFactory.build(DECORATOR, {
+        className: 'arbitrary'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+
+      Component = ComponentFactory.build(MIXIN, {
+        className: 'arbitrary'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+
+      Component = ComponentFactory.build(UTILITY, {
+        componentName: 'Component',
+        className: 'arbitrary'
+      }, {
+        componentName: 'Component',
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant/);
+    });
+
+    it('can assign own className', () => {
+      Component = ComponentFactory.build(DECORATOR, {}, {
+        descendantName: 'descendant',
+        className: 'arbitrary'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
+
+      Component = ComponentFactory.build(MIXIN, {}, {
+        descendantName: 'descendant',
+        className: 'arbitrary'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
+
+      Component = ComponentFactory.build(UTILITY, {
+        componentName: 'Component'
+      }, {
+        componentName: 'Component',
+        descendantName: 'descendant',
+        className: 'arbitrary'
+      });
+      component = renderComponent(Component);
+      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
+    });
   });
 });
