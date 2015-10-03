@@ -1,6 +1,6 @@
 'use strict';
 
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 import SuitCssify from '../index';
 import classNames from 'classnames';
 
@@ -8,13 +8,13 @@ const getClassName = SuitCssify.utility;
 
 const Button = React.createClass({
   propTypes: {
-    children: React.PropTypes.node,
-    className: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    kind: React.PropTypes.oneOf(['primary', 'secondary']),
-    onClick: React.PropTypes.func,
-    size: React.PropTypes.oneOf(['small', 'medium', 'large']),
-    utilities: React.PropTypes.string
+    children: PropTypes.node,
+    className: PropTypes.string,
+    disabled: PropTypes.bool,
+    kind: PropTypes.oneOf(['primary', 'secondary']),
+    onClick: PropTypes.func,
+    size: PropTypes.oneOf(['small', 'medium', 'large']),
+    utilities: PropTypes.string
   },
 
   render() {

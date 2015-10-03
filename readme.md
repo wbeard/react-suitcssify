@@ -167,6 +167,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 3.0.1 - Minor updates. Use destructuring assignment instead of Object.assign.  Utilize internal format method to de-dupe similar code.  Adjust imports.
 * 3.0.0 - Descendant elements no longer automatically inherit parent className.
 * 2.0.2 - Add extra this.props check when using as utility.
 * 2.0.1 - Remove React as peer dependency.
