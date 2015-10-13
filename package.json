@@ -1,6 +1,6 @@
 {
   "name": "react-suitcssify",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A React component utility to generate CSS class names that conform to SUIT CSS naming conventions.",
   "main": "./dist/index.js",
   "scripts": {
@@ -30,15 +30,17 @@
   "homepage": "https://github.com/brentertz/react-suitcssify",
   "devDependencies": {
     "babel": "^5.4.7",
-    "babel-eslint": "^3.1.23",
+    "babel-eslint": "^4.1.3",
     "babel-jest": "^5.2.0",
     "babelify": "^6.1.1",
-    "browserify": "^10.2.1",
+    "browserify": "^11.2.0",
     "classnames": "^2.1.1",
-    "eslint": "^0.24.0",
-    "eslint-plugin-react": "^2.6.4",
-    "jest-cli": "^0.4.5",
-    "react": "^0.13.3"
+    "eslint": "^1.6.0",
+    "eslint-plugin-react": "^3.5.1",
+    "jest-cli": "^0.5.10",
+    "react": "^0.14.0",
+    "react-addons-test-utils": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",

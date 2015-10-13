@@ -1,6 +1,6 @@
 'use strict';
 
-import React, { Component, PropTypes } from 'react/addons';
+import React, { Component, PropTypes } from 'react';
 import SuitCssify from '../index';
 import classNames from 'classnames';
 

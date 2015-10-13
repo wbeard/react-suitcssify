@@ -1,11 +1,12 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { default as ButtonWithDecorator } from './ButtonWithDecorator';
 import { default as ButtonWithMixin } from './ButtonWithMixin';
 import { default as ButtonWithUtility } from './ButtonWithUtility';
 
-React.render(
+ReactDOM.render(
   <div>
     <div>
       <h2>Decorator examples</h2>

@@ -2,8 +2,10 @@
 
 jest.autoMockOff();
 
-import React from 'react/addons';
-const { TestUtils } = React.addons;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const ReactDOMServer = require('react-dom/server');
+const ReactTestUtils = require('react-addons-test-utils');
 const SuitCssify = require('../index');
 
 const DECORATOR = 0;
@@ -12,7 +14,7 @@ const UTILITY = 2;
 
 /* eslint-disable react/no-multi-comp, no-shadow, no-unused-vars */
 const ComponentFactory = {
-  build(kind, options={}, descendantOptions={}) {
+  build(kind, options={}, descendantOptions) {
     let Component;
 
     switch(kind) {
@@ -22,7 +24,7 @@ const ComponentFactory = {
           render() {
             return (
               <div className={ this.getClassName(options) }>
-                <span ref="descendant" className={ this.getClassName(descendantOptions) }></span>
+                { descendantOptions && <span ref="descendant" className={ this.getClassName(descendantOptions) }></span> }
               </div>
             );
           }
@@ -35,7 +37,7 @@ const ComponentFactory = {
           render() {
             return (
               <div className={ this.getClassName(options) }>
-                <span ref="descendant" className={ this.getClassName(descendantOptions) }></span>
+                { descendantOptions && <span ref="descendant" className={ this.getClassName(descendantOptions) }></span> }
               </div>
             );
           }
@@ -48,7 +50,7 @@ const ComponentFactory = {
           render() {
             return (
               <div className={ getClassName(options) }>
-                <span ref="descendant" className={ getClassName(descendantOptions) }></span>
+                { descendantOptions && <span ref="descendant" className={ getClassName(descendantOptions) }></span> }
               </div>
             );
           }
@@ -65,8 +67,8 @@ function renderComponent(Component, props={}) {
   const jsx = (
     <Component { ...props } />
   );
-  const component = TestUtils.renderIntoDocument(jsx);
-  //console.log(React.renderToStaticMarkup(jsx));
+  const component = ReactTestUtils.renderIntoDocument(jsx);
+  //console.log(ReactDOMServer.renderToStaticMarkup(jsx));
   return component;
 }
 
@@ -95,12 +97,12 @@ describe('SuitCssify', () => {
     it('includes capitalized component name defaulting to the component displayName', () => {
       Component = ComponentFactory.build(DECORATOR);
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component/);
 
       Component = ComponentFactory.build(MIXIN);
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component/);
     });
 
@@ -109,21 +111,21 @@ describe('SuitCssify', () => {
         componentName: 'FooBar'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/FooBar/);
 
       Component = ComponentFactory.build(MIXIN, {
         componentName: 'FooBar'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/FooBar/);
 
       Component = ComponentFactory.build(UTILITY, {
         componentName: 'FooBar'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/FooBar/);
     });
 
@@ -132,14 +134,14 @@ describe('SuitCssify', () => {
         namespace: 'my'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/my-Component/);
 
       Component = ComponentFactory.build(MIXIN, {
         namespace: 'my'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/my-Component/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -147,7 +149,7 @@ describe('SuitCssify', () => {
         namespace: 'my'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/my-Component/);
     });
 
@@ -156,14 +158,14 @@ describe('SuitCssify', () => {
         descendantName: 'descendant-element'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component-descendantElement/);
 
       Component = ComponentFactory.build(MIXIN, {
         descendantName: 'descendant-element'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component-descendantElement/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -171,7 +173,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant-element'
       });
       component = renderComponent(Component);
-      className = React.findDOMNode(component).className;
+      className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component-descendantElement/);
     });
   });
@@ -181,7 +183,7 @@ describe('SuitCssify', () => {
       modifiers: 'modifier-one modifier-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/Component--modifierOne/);
     expect(className).toMatch(/Component--modifierTwo/);
 
@@ -189,7 +191,7 @@ describe('SuitCssify', () => {
       modifiers: 'modifier-one modifier-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/Component--modifierOne/);
     expect(className).toMatch(/Component--modifierTwo/);
 
@@ -198,7 +200,7 @@ describe('SuitCssify', () => {
       modifiers: 'modifier-one modifier-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/Component--modifierOne/);
     expect(className).toMatch(/Component--modifierTwo/);
   });
@@ -208,7 +210,7 @@ describe('SuitCssify', () => {
       states: 'state-one state-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/is-stateOne/);
     expect(className).toMatch(/is-stateTwo/);
 
@@ -216,7 +218,7 @@ describe('SuitCssify', () => {
       states: 'state-one state-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/is-stateOne/);
     expect(className).toMatch(/is-stateTwo/);
 
@@ -225,7 +227,7 @@ describe('SuitCssify', () => {
       states: 'state-one state-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/is-stateOne/);
     expect(className).toMatch(/is-stateTwo/);
   });
@@ -235,7 +237,7 @@ describe('SuitCssify', () => {
       utilities: 'utility-one utility-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
 
@@ -243,7 +245,7 @@ describe('SuitCssify', () => {
       utilities: 'utility-one utility-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
 
@@ -252,7 +254,7 @@ describe('SuitCssify', () => {
       utilities: 'utility-one utility-two'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
   });
@@ -262,7 +264,7 @@ describe('SuitCssify', () => {
     component = renderComponent(Component, {
       utilities: 'utility-one utility-two'
     });
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
 
@@ -270,7 +272,7 @@ describe('SuitCssify', () => {
     component = renderComponent(Component, {
       utilities: 'utility-one utility-two'
     });
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
   });
@@ -280,14 +282,14 @@ describe('SuitCssify', () => {
     component = renderComponent(Component, {
       className: 'arbitrary'
     });
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/arbitrary/);
 
     Component = ComponentFactory.build(MIXIN);
     component = renderComponent(Component, {
       className: 'arbitrary'
     });
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/arbitrary/);
 
     Component = ComponentFactory.build(UTILITY, {
@@ -295,7 +297,7 @@ describe('SuitCssify', () => {
       componentName: 'Component'
     });
     component = renderComponent(Component);
-    className = React.findDOMNode(component).className;
+    className = ReactDOM.findDOMNode(component).className;
     expect(className).toMatch(/arbitrary/);
   });
 
@@ -307,7 +309,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
       Component = ComponentFactory.build(MIXIN, {
@@ -316,7 +318,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -327,7 +329,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
     });
 
@@ -339,7 +341,7 @@ describe('SuitCssify', () => {
         utilities: 'utility-three'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
 
       Component = ComponentFactory.build(MIXIN, {
@@ -349,7 +351,7 @@ describe('SuitCssify', () => {
         utilities: 'utility-three'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -361,7 +363,7 @@ describe('SuitCssify', () => {
         utilities: 'utility-three'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
     });
 
@@ -372,7 +374,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
       Component = ComponentFactory.build(MIXIN, {
@@ -381,7 +383,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -392,7 +394,7 @@ describe('SuitCssify', () => {
         descendantName: 'descendant'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
     });
 
@@ -402,7 +404,7 @@ describe('SuitCssify', () => {
         className: 'arbitrary'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
 
       Component = ComponentFactory.build(MIXIN, {}, {
@@ -410,7 +412,7 @@ describe('SuitCssify', () => {
         className: 'arbitrary'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
 
       Component = ComponentFactory.build(UTILITY, {
@@ -421,7 +423,7 @@ describe('SuitCssify', () => {
         className: 'arbitrary'
       });
       component = renderComponent(Component);
-      descendantClassName = React.findDOMNode(component.refs.descendant).className;
+      descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
     });
   });
