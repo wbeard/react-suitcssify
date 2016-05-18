@@ -26,6 +26,11 @@ When using the decorator or mixin approach, the following sensible defaults are 
 * __namespace__ - `Component.namespace`
 * __utilities__ - `Component.props.utilities`  _Note that `Component.propTypes.utilities` is also added for convenience._
 
+When using the higher-order approach, the following defaults are provided.
+
+* __className__  - `props.className`
+* __componentName__ - `Component.displayName || Component.name`
+* __utilities__ - `props.utilities`
 
 ## Installation
 
@@ -42,8 +47,8 @@ import React from 'react';
 import SuitCssify from 'react-suitcssify';
 
 @SuitCssify.decorator
-MyComponent extends React.Component{
-  render: function() {
+class MyComponent extends React.Component {
+  render() {
     return <div className={ this.getClassName() }></div>
   }
 }
@@ -51,6 +56,42 @@ MyComponent extends React.Component{
 React.render(<MyComponent/>, document.body);
 ```
 * _NOTE: Your codebase must support ES7 decorators to use this synax.  Alternatively, simply use the decorator as a wrapper function to achieve the same effect._
+
+#### As a higher-order component
+
+This approach is necessary when working with [stateless functional React components](https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components).
+
+```JavaScript
+import React from 'react';
+import SuitCssify from 'react-suitcssify';
+
+const MyComponent = ({ getClassName }) => <div className={ getClassName() }></div>;
+
+const WrappedComponent = SuitCssify.higherOrder("optional_namespace")(MyComponent);
+
+React.render(<WrappedComponent/>, document.body);
+```
+
+Here's an example with an ES6 class React component.
+
+```JavaScript
+import React from 'react';
+import SuitCssify from 'react-suitcssify';
+
+class MyComponent extends React.Component {
+  static propTypes = {
+    React.PropTypes.func.isRequired
+  };
+
+  render() {
+    return <div className={ this.props.getClassName() }></div>
+  }
+}
+
+const WrappedComponent = SuitCssify.higherOrder("optional_namespace")(MyComponent);
+
+React.render(<WrappedComponent/>, document.body);
+```
 
 #### As a mixin
 

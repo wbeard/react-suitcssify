@@ -9,8 +9,10 @@ const ReactTestUtils = require('react-addons-test-utils');
 const SuitCssify = require('../index');
 
 const DECORATOR = 0;
-const MIXIN = 1;
-const UTILITY = 2;
+const HIGHER_ORDER = 1;
+const HIGHER_ORDER_STATELESS = 2;
+const MIXIN = 3;
+const UTILITY = 4;
 
 /* eslint-disable react/no-multi-comp, no-shadow, no-unused-vars */
 const ComponentFactory = {
@@ -29,6 +31,33 @@ const ComponentFactory = {
             );
           }
         }
+        break;
+
+      case HIGHER_ORDER:
+        class InnerCmp extends React.Component{
+          static propTypes = {
+            getClassName: React.PropTypes.func.isRequired
+          };
+
+          render() {
+            return (
+              <div className={ this.props.getClassName(options) }>
+                { descendantOptions && <span ref="descendant" className={ this.props.getClassName(descendantOptions) }></span> }
+              </div>
+            );
+          }
+        }
+        Component = SuitCssify.higherOrder('foo')(InnerCmp);
+        break;
+
+      case HIGHER_ORDER_STATELESS:
+        const InnerStateless = ({ getClassName }) => (
+          <div className={ getClassName(options) }>
+            { descendantOptions && <span className={ getClassName(descendantOptions) }></span> }
+          </div>
+        );
+        InnerStateless.displayName = 'InnerStateless';
+        Component = SuitCssify.higherOrder('bar')(InnerStateless);
         break;
 
       case MIXIN:
@@ -100,6 +129,16 @@ describe('SuitCssify', () => {
       className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component/);
 
+      Component = ComponentFactory.build(HIGHER_ORDER);
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/foo-InnerCmp/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS);
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/bar-InnerStateless/);
+
       Component = ComponentFactory.build(MIXIN);
       component = renderComponent(Component);
       className = ReactDOM.findDOMNode(component).className;
@@ -113,6 +152,20 @@ describe('SuitCssify', () => {
       component = renderComponent(Component);
       className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/FooBar/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        componentName: 'FooBar'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/foo-FooBar/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        componentName: 'FooBar'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/bar-FooBar/);
 
       Component = ComponentFactory.build(MIXIN, {
         componentName: 'FooBar'
@@ -137,6 +190,20 @@ describe('SuitCssify', () => {
       className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/my-Component/);
 
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        namespace: 'my'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/my-InnerCmp/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        namespace: 'my'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/my-InnerStateless/);
+
       Component = ComponentFactory.build(MIXIN, {
         namespace: 'my'
       });
@@ -160,6 +227,20 @@ describe('SuitCssify', () => {
       component = renderComponent(Component);
       className = ReactDOM.findDOMNode(component).className;
       expect(className).toMatch(/Component-descendantElement/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        descendantName: 'descendant-element'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/foo-InnerCmp-descendantElement/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        descendantName: 'descendant-element'
+      });
+      component = renderComponent(Component);
+      className = ReactDOM.findDOMNode(component).className;
+      expect(className).toMatch(/bar-InnerStateless-descendantElement/);
 
       Component = ComponentFactory.build(MIXIN, {
         descendantName: 'descendant-element'
@@ -187,6 +268,22 @@ describe('SuitCssify', () => {
     expect(className).toMatch(/Component--modifierOne/);
     expect(className).toMatch(/Component--modifierTwo/);
 
+    Component = ComponentFactory.build(HIGHER_ORDER, {
+      modifiers: 'modifier-one modifier-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/foo-InnerCmp--modifierOne/);
+    expect(className).toMatch(/foo-InnerCmp--modifierTwo/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+      modifiers: 'modifier-one modifier-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/bar-InnerStateless--modifierOne/);
+    expect(className).toMatch(/bar-InnerStateless--modifierTwo/);
+
     Component = ComponentFactory.build(MIXIN, {
       modifiers: 'modifier-one modifier-two'
     });
@@ -207,6 +304,22 @@ describe('SuitCssify', () => {
 
   it('state class names follow SuitCss conventions', () => {
     Component = ComponentFactory.build(DECORATOR, {
+      states: 'state-one state-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/is-stateOne/);
+    expect(className).toMatch(/is-stateTwo/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER, {
+      states: 'state-one state-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/is-stateOne/);
+    expect(className).toMatch(/is-stateTwo/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
       states: 'state-one state-two'
     });
     component = renderComponent(Component);
@@ -241,6 +354,22 @@ describe('SuitCssify', () => {
     expect(className).toMatch(/u-utilityOne/);
     expect(className).toMatch(/u-utilityTwo/);
 
+    Component = ComponentFactory.build(HIGHER_ORDER, {
+      utilities: 'utility-one utility-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/u-utilityOne/);
+    expect(className).toMatch(/u-utilityTwo/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+      utilities: 'utility-one utility-two'
+    });
+    component = renderComponent(Component);
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/u-utilityOne/);
+    expect(className).toMatch(/u-utilityTwo/);
+
     Component = ComponentFactory.build(MIXIN, {
       utilities: 'utility-one utility-two'
     });
@@ -259,26 +388,22 @@ describe('SuitCssify', () => {
     expect(className).toMatch(/u-utilityTwo/);
   });
 
-  it('transfers utilities props directly', () => {
-    Component = ComponentFactory.build(DECORATOR);
-    component = renderComponent(Component, {
-      utilities: 'utility-one utility-two'
-    });
-    className = ReactDOM.findDOMNode(component).className;
-    expect(className).toMatch(/u-utilityOne/);
-    expect(className).toMatch(/u-utilityTwo/);
-
-    Component = ComponentFactory.build(MIXIN);
-    component = renderComponent(Component, {
-      utilities: 'utility-one utility-two'
-    });
-    className = ReactDOM.findDOMNode(component).className;
-    expect(className).toMatch(/u-utilityOne/);
-    expect(className).toMatch(/u-utilityTwo/);
-  });
-
   it('allows arbitrary class names to be set', () => {
     Component = ComponentFactory.build(DECORATOR);
+    component = renderComponent(Component, {
+      className: 'arbitrary'
+    });
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/arbitrary/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER);
+    component = renderComponent(Component, {
+      className: 'arbitrary'
+    });
+    className = ReactDOM.findDOMNode(component).className;
+    expect(className).toMatch(/arbitrary/);
+
+    Component = ComponentFactory.build(HIGHER_ORDER_STATELESS);
     component = renderComponent(Component, {
       className: 'arbitrary'
     });
@@ -312,6 +437,26 @@ describe('SuitCssify', () => {
       descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      let innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/foo-InnerCmp-descendant/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/bar-InnerStateless-descendant/);
+
       Component = ComponentFactory.build(MIXIN, {
         utilities: 'utility-one utility-two'
       }, {
@@ -343,6 +488,28 @@ describe('SuitCssify', () => {
       component = renderComponent(Component);
       descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant u-utilityThree/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant',
+        utilities: 'utility-three'
+      });
+      component = renderComponent(Component);
+      let innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/foo-InnerCmp-descendant u-utilityThree/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        utilities: 'utility-one utility-two'
+      }, {
+        descendantName: 'descendant',
+        utilities: 'utility-three'
+      });
+      component = renderComponent(Component);
+      innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/bar-InnerStateless-descendant u-utilityThree/);
 
       Component = ComponentFactory.build(MIXIN, {
         utilities: 'utility-one utility-two'
@@ -377,6 +544,26 @@ describe('SuitCssify', () => {
       descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant/);
 
+      Component = ComponentFactory.build(HIGHER_ORDER, {
+        className: 'arbitrary'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      let innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/foo-InnerCmp-descendant/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {
+        className: 'arbitrary'
+      }, {
+        descendantName: 'descendant'
+      });
+      component = renderComponent(Component);
+      innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/bar-InnerStateless-descendant/);
+
       Component = ComponentFactory.build(MIXIN, {
         className: 'arbitrary'
       }, {
@@ -406,6 +593,24 @@ describe('SuitCssify', () => {
       component = renderComponent(Component);
       descendantClassName = ReactDOM.findDOMNode(component.refs.descendant).className;
       expect(descendantClassName).toMatch(/Component-descendant arbitrary/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER, {}, {
+        descendantName: 'descendant',
+        className: 'arbitrary'
+      });
+      component = renderComponent(Component);
+      let innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/foo-InnerCmp-descendant arbitrary/);
+
+      Component = ComponentFactory.build(HIGHER_ORDER_STATELESS, {}, {
+        descendantName: 'descendant',
+        className: 'arbitrary'
+      });
+      component = renderComponent(Component);
+      innerSpan = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'span');
+      descendantClassName = ReactDOM.findDOMNode(innerSpan).className;
+      expect(descendantClassName).toMatch(/bar-InnerStateless-descendant arbitrary/);
 
       Component = ComponentFactory.build(MIXIN, {}, {
         descendantName: 'descendant',
