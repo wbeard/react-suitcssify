@@ -18,17 +18,17 @@ const Button = React.createClass({
   },
 
   render() {
+    const { children, className, disabled, kind, onClick, size, utilities } = this.props;
+
     const buttonProps = {
       className: getClassName({
-        className: this.props.className,
+        className,
         componentName: this.constructor.displayName,
-        modifiers: classNames(this.props.kind, this.props.size),
-        states: classNames({
-          disabled: this.props.disabled
-        }),
-        utilities: this.props.utilities
+        modifiers: classNames(kind, size),
+        states: classNames({ disabled }),
+        utilities
       }),
-      onClick: this.props.onClick && this.props.onClick()
+      onClick: onClick && onClick()
     };
 
     const textProps = {
@@ -40,7 +40,7 @@ const Button = React.createClass({
 
     return (
       <button { ...buttonProps }>
-        <span { ...textProps }>{ this.props.children }</span>
+        <span { ...textProps }>{ children }</span>
       </button>
     );
   }

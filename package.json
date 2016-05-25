@@ -1,6 +1,6 @@
 {
   "name": "react-suitcssify",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "A React component utility to generate CSS class names that conform to SUIT CSS naming conventions.",
   "main": "./dist/index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "npm run clean && $(npm bin)/babel ./index.js --source-maps --out-dir ./dist && $(npm bin)/babel ./lib --source-maps --out-dir ./dist/lib",
     "demo": "$(npm bin)/browserify ./demo/demo.js -t babelify -o ./dist/demo.js && open ./demo/index.html",
     "lint": "$(npm bin)/eslint .",
+    "pack-ls": "npm pack && tar -tzvf react-suitcssify*.tgz && rm react-suitcssify*.tgz",
     "prepublish": "npm run build",
     "test": "jest"
   },
@@ -20,7 +21,8 @@
     "react-component",
     "suitcss",
     "suit",
-    "css"
+    "css",
+    "BEM"
   ],
   "author": "Brent Ertz <brent.ertz@gmail.com>",
   "license": "MIT",
@@ -38,9 +40,12 @@
     "eslint": "^1.6.0",
     "eslint-plugin-react": "^3.5.1",
     "jest-cli": "^0.5.10",
-    "react": "^0.14.0",
-    "react-addons-test-utils": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react": "^15.1.0",
+    "react-addons-test-utils": "^15.1.0",
+    "react-dom": "^15.1.0"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0-0"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",

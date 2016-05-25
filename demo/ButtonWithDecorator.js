@@ -15,25 +15,23 @@ class Button extends Component {
   };
 
   render() {
+    const { children, disabled, kind, onClick, size } = this.props;
+
     const buttonProps = {
       className: this.getClassName({
-        modifiers: classNames(this.props.kind, this.props.size),
-        states: classNames({
-          disabled: this.props.disabled
-        })
+        modifiers: classNames(kind, size),
+        states: classNames({ disabled })
       }),
-      onClick: this.props.onClick && this.props.onClick()
+      onClick: onClick && onClick()
     };
 
     const textProps = {
-      className: this.getClassName({
-        descendantName: 'text'
-      })
+      className: this.getClassName({ descendantName: 'text' })
     };
 
     return (
       <button { ...buttonProps }>
-        <span { ...textProps }>{ this.props.children }</span>
+        <span { ...textProps }>{ children }</span>
       </button>
     );
   }

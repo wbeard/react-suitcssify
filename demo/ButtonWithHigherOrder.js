@@ -1,25 +1,24 @@
 'use strict';
 
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import SuitCssify from '../index';
 import classNames from 'classnames';
 
-let Button = React.createClass({
-  mixins: [SuitCssify.mixin],
-
-  propTypes: {
+class Button extends Component {
+  static propTypes = {
     children: PropTypes.node,
     disabled: PropTypes.bool,
+    getClassName: PropTypes.func.isRequired,
     kind: PropTypes.oneOf(['primary', 'secondary']),
     onClick: PropTypes.func,
     size: PropTypes.oneOf(['small', 'medium', 'large'])
-  },
+  };
 
   render() {
-    const { children, disabled, kind, onClick, size } = this.props;
+    const { children, disabled, getClassName, kind, onClick, size } = this.props;
 
     const buttonProps = {
-      className: this.getClassName({
+      className: getClassName({
         modifiers: classNames(kind, size),
         states: classNames({ disabled })
       }),
@@ -27,7 +26,7 @@ let Button = React.createClass({
     };
 
     const textProps = {
-      className: this.getClassName({ descendantName: 'text' })
+      className: getClassName({ descendantName: 'text' })
     };
 
     return (
@@ -36,6 +35,6 @@ let Button = React.createClass({
       </button>
     );
   }
-});
+}
 
-export default Button;
+export default SuitCssify.higherOrder()(Button);
