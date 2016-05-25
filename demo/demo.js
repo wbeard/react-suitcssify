@@ -3,6 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { default as ButtonWithDecorator } from './ButtonWithDecorator';
+import { default as ButtonWithHigherOrder } from './ButtonWithHigherOrder';
 import { default as ButtonWithMixin } from './ButtonWithMixin';
 import { default as ButtonWithUtility } from './ButtonWithUtility';
 
@@ -23,6 +24,24 @@ ReactDOM.render(
         <ButtonWithDecorator kind="secondary" size="large" disabled>Hello</ButtonWithDecorator>
         <ButtonWithDecorator kind="secondary" size="large" utilities="pullRight">Hello</ButtonWithDecorator>
         <ButtonWithDecorator kind="secondary" size="large" utilities="pullRight" className="someOtherClass">Hello</ButtonWithDecorator>
+      </div>
+    </div>
+    <hr />
+    <div>
+      <h2>Higher-order component examples</h2>
+      <div className="group">
+        <ButtonWithHigherOrder kind="primary" size="small">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="primary" size="medium">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="primary" size="large" disabled>Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="primary" size="large" utilities="pullRight">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="primary" size="large" utilities="pullRight" className="someOtherClass">Hello</ButtonWithHigherOrder>
+      </div>
+      <div className="group">
+        <ButtonWithHigherOrder kind="secondary" size="small">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="secondary" size="medium">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="secondary" size="large" disabled>Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="secondary" size="large" utilities="pullRight">Hello</ButtonWithHigherOrder>
+        <ButtonWithHigherOrder kind="secondary" size="large" utilities="pullRight" className="someOtherClass">Hello</ButtonWithHigherOrder>
       </div>
     </div>
     <hr />

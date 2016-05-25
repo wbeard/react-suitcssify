@@ -2,8 +2,8 @@
 
 A React component utility to generate CSS class names that conform to [SUIT CSS naming conventions](https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md).
 
-__This utility can be used as a decorator, mixin, or utility function__.
-This means that you can use it with React components defined as ES6 classes.
+__This utility can be used as a higher-order component, decorator, mixin, or utility function__.
+This means that you can use it with React components defined as ES2015 classes.
 
 Provides a general purpose `getClassName(options)` method that accepts a variety of options for generating SUIT CSS conformant class names.
 
@@ -19,13 +19,18 @@ getClassName({
 })
 ```
 
-When using the decorator or mixin approach, the following sensible defaults are provided.
+When using the decorator or mixin approach, the following defaults are provided.
 
 * __className__  - `Component.props.className`  _Note that `Component.propTypes.className` is also added for convenience._
-* __componentName__ - `Component.constructor.displayName || Component.constructor.name`
+* __componentName__ - `Component.displayName || Component.name`
 * __namespace__ - `Component.namespace`
 * __utilities__ - `Component.props.utilities`  _Note that `Component.propTypes.utilities` is also added for convenience._
 
+When using the higher-order approach, the following defaults are provided.
+
+* __className__  - `Component.props.className`
+* __componentName__ - `Component.displayName || Component.name`
+* __utilities__ - `Component.props.utilities`
 
 ## Installation
 
@@ -35,27 +40,67 @@ npm install react-suitcssify
 
 ## Usage
 
-#### ES6 class with a decorator
+#### ES2015 class with a decorator
 
 ```JavaScript
 import React from 'react';
+import ReactDOM from 'react-dom';
 import SuitCssify from 'react-suitcssify';
 
 @SuitCssify.decorator
-MyComponent extends React.Component{
-  render: function() {
+class MyComponent extends React.Component {
+  render() {
     return <div className={ this.getClassName() }></div>
   }
 }
 
-React.render(<MyComponent/>, document.body);
+ReactDOM.render(<MyComponent/>, document.body);
 ```
-* _NOTE: Your codebase must support ES7 decorators to use this synax.  Alternatively, simply use the decorator as a wrapper function to achieve the same effect._
+* _NOTE: Your codebase must support ES7 decorators to use this syntax.  Alternatively, simply use the decorator as a wrapper function to achieve the same effect._
+
+#### As a higher-order component
+
+This approach is necessary when working with [stateless functional React components](https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components).
+
+```JavaScript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SuitCssify from 'react-suitcssify';
+
+const MyComponent = ({ getClassName }) => <div className={ getClassName() }></div>;
+
+const WrappedComponent = SuitCssify.higherOrder('optional_namespace')(MyComponent);
+
+ReactDOM.render(<WrappedComponent/>, document.body);
+```
+
+Here's an example with an ES2015 class React component.
+
+```JavaScript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SuitCssify from 'react-suitcssify';
+
+class MyComponent extends React.Component {
+  static propTypes = {
+    getClassName: React.PropTypes.func.isRequired
+  };
+
+  render() {
+    return <div className={ this.props.getClassName() }></div>
+  }
+}
+
+const WrappedComponent = SuitCssify.higherOrder('optional_namespace')(MyComponent);
+
+ReactDOM.render(<WrappedComponent/>, document.body);
+```
 
 #### As a mixin
 
 ```JavaScript
 import React from 'react';
+import ReactDOM from 'react-dom';
 import SuitCssify from 'react-suitcssify';
 
 const MyComponent = React.createClass({
@@ -66,13 +111,14 @@ const MyComponent = React.createClass({
   }
 });
 
-React.render(<MyComponent/>, document.body);
+ReactDOM.render(<MyComponent/>, document.body);
 ```
 
 #### As a utility method
 
 ```JavaScript
 import React from 'react';
+import ReactDOM from 'react-dom';
 import SuitCssify from 'react-suitcssify';
 
 const getClassName = SuitCssify.utility;
@@ -83,7 +129,7 @@ const MyComponent = React.createClass({
   }
 });
 
-React.render(<MyComponent/>, document.body);
+ReactDOM.render(<MyComponent/>, document.body);
 ```
 
 
@@ -167,6 +213,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 3.1.0 - Add higher-order component option. Update React version and add to peerDependencies.  Other minor tweaks.
 * 3.0.2 - Update decorator to not use inheritance.  Update dev dependencies, including react 0.14.
 * 3.0.1 - Use destructuring assignment instead of Object.assign.  Utilize internal format method to de-dupe similar code.  Adjust imports.
 * 3.0.0 - Descendant elements no longer automatically inherit parent className.
