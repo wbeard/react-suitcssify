@@ -1,40 +1,39 @@
 'use strict';
 
-jest.autoMockOff();
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
+import ReactTestUtils from 'react-addons-test-utils';
+import SuitCssify from '../index';
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const ReactDOMServer = require('react-dom/server');
-const ReactTestUtils = require('react-addons-test-utils');
-const SuitCssify = require('../index');
+const DECORATOR = 'decorator';
+const HIGHER_ORDER = 'higher order';
+const HIGHER_ORDER_STATELESS = 'higher order stateless';
+const MIXIN = 'mixin';
+const UTILITY = 'utility';
 
-const DECORATOR = 0;
-const HIGHER_ORDER = 1;
-const HIGHER_ORDER_STATELESS = 2;
-const MIXIN = 3;
-const UTILITY = 4;
-
-/* eslint-disable react/no-multi-comp, no-shadow, no-unused-vars */
+/* eslint-disable react/no-multi-comp */
 const ComponentFactory = {
-  build(kind, options={}, descendantOptions) {
+  build(kind, options={}, descendantOptions = null, useNewer = false) {
     let Component;
 
     switch(kind) {
       case DECORATOR:
         @SuitCssify.decorator
-        class Component extends React.Component{
+        class Component extends React.Component {
           render() {
-            return (
+            const ret = (
               <div className={ this.getClassName(options) }>
                 { descendantOptions && <span ref="descendant" className={ this.getClassName(descendantOptions) }></span> }
               </div>
             );
+            return ret;
           }
         }
         break;
 
       case HIGHER_ORDER:
-        class InnerCmp extends React.Component{
+        class InnerCmp extends React.Component {
           static propTypes = {
             getClassName: React.PropTypes.func.isRequired
           };
@@ -47,7 +46,7 @@ const ComponentFactory = {
             );
           }
         }
-        Component = SuitCssify.higherOrder('foo')(InnerCmp);
+        Component = SuitCssify.higherOrder('foo', useNewer)(InnerCmp);
         break;
 
       case HIGHER_ORDER_STATELESS:
@@ -57,7 +56,7 @@ const ComponentFactory = {
           </div>
         );
         InnerStateless.displayName = 'InnerStateless';
-        Component = SuitCssify.higherOrder('bar')(InnerStateless);
+        Component = SuitCssify.higherOrder('bar', useNewer)(InnerStateless);
         break;
 
       case MIXIN:
