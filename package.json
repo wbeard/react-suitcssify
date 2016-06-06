@@ -9,7 +9,6 @@
     "demo": "$(npm bin)/browserify ./demo/demo.js -t babelify -o ./dist/demo.js && open ./demo/index.html",
     "lint": "$(npm bin)/eslint .",
     "pack-ls": "npm pack && tar -tzvf react-suitcssify*.tgz && rm react-suitcssify*.tgz",
-    "perf-test": "babel-node bin/perf-test.js",
     "prepublish": "npm run build",
     "test": "jest"
   },

@@ -3,12 +3,13 @@
 A React component utility to generate CSS class names that conform to [SUIT CSS naming conventions](https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md).
 
 __This utility can be used as a higher-order component, decorator, mixin, or utility function__.
-This means that you can use it with React components defined as ES2015 classes.
+This means that you can use it with React components defined using createClass, ES2015 classes, or stateless-functional components.
 
 Provides a general purpose `getClassName(options)` method that accepts a variety of options for generating SUIT CSS conformant class names.
 
 ```JavaScript
 getClassName({
+  baseComponentName: string,
   className: string,
   componentName: string,
   descendantName: string,
@@ -18,6 +19,8 @@ getClassName({
   utilities: string
 })
 ```
+
+
 
 When using the decorator or mixin approach, the following defaults are provided.
 
@@ -60,7 +63,7 @@ ReactDOM.render(<MyComponent/>, document.body);
 
 #### As a higher-order component
 
-This approach is necessary when working with [stateless functional React components](https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components).
+This decorator approach does not work with [stateless functional React components](https://facebook.github.io/react/blog/2015/10/07/react-v0.14.html#stateless-functional-components). This approach will pass in the `getClassName` function as a prop to your component.
 
 ```JavaScript
 import React from 'react';
@@ -114,24 +117,41 @@ const MyComponent = React.createClass({
 ReactDOM.render(<MyComponent/>, document.body);
 ```
 
-#### As a utility method
+#### Calling getClassName directly
 
 ```JavaScript
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SuitCssify from 'react-suitcssify';
 
-const getClassName = SuitCssify.utility;
+const getClassName = SuitCssify.getClassName;
 
-const MyComponent = React.createClass({
-  render: function() {
-    return <div className={ getClassName({ componentName: 'MyComponent' }) }></div>
+class MyComponent extends React.Component {
+  render() {
+    return <div className={ getClassName({ componentName: 'MyComponent', namespace: 'my' }) }></div>
   }
-});
+}
 
 ReactDOM.render(<MyComponent/>, document.body);
 ```
 
+A more performant implementation of a component using the `getClassName` function directly is to instead call getBaseComponentName which pre-calculates the baseComponentName one time given the componentName and namespace instead of calculating it on every call. While being slightly more verbose than the other options, it will provide better performance than all the other approaches. Here's what that looks like:
+
+```
+const displayName = 'MyComponent';
+const namespace = 'my';
+const baseComponentName = SuitCssify.getBaseComponentName(displayName, namespace);
+const getClassName = SuitCssify.getClassName;
+
+class MyComponent extends React.Component {
+  render() {
+    return <div className={ getClassName({ baseComponentName }) }></div>
+  }
+}
+
+ReactDOM.render(<MyComponent/>, document.body);
+
+```
 
 Each of the above render as:
 
@@ -185,6 +205,10 @@ getClassName({
   descendantName: 'child'
 }) -----> 'my-AwesomeComponent-child my-AwesomeComponent-child--foo my-AwesomeComponent-child--bar is-active u-floatRight arbitrary'
 
+const baseComponentName = getBaseComponentName('Component', 'my');
+getClassName({
+  baseComponentName
+}) -----> 'my-Component'
 ```
 
 For more examples, browse the [demo files](https://github.com/brentertz/react-suitcss-mixin/blob/master/demo) or just run the demo.
@@ -213,6 +237,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 ## Release History
 
+* 3.2.0 - Add getBaseComponentName to API. Alias `utility` as `getClassName` -- utility will be removed in a future release as it would be a breaking change.
 * 3.1.0 - Add higher-order component option. Update React version and add to peerDependencies.  Other minor tweaks.
 * 3.0.2 - Update decorator to not use inheritance.  Update dev dependencies, including react 0.14.
 * 3.0.1 - Use destructuring assignment instead of Object.assign.  Utilize internal format method to de-dupe similar code.  Adjust imports.
