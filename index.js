@@ -3,13 +3,15 @@
 import decorator from './lib/decorator';
 import higherOrder from './lib/higher-order';
 import mixin from './lib/mixin';
-import utility from './lib/utility';
+import { getBaseComponentName, getClassName } from './lib/utility';
 
 const SuitCssify = {
   decorator,
+  getBaseComponentName,
+  getClassName,
   higherOrder,
   mixin,
-  utility
+  utility: getClassName
 };
 
 export default SuitCssify;

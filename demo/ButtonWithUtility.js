@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import SuitCssify from '../index';
 import classNames from 'classnames';
 
-const getClassName = SuitCssify.utility;
+const getClassName = SuitCssify.getClassName;
 
 const Button = React.createClass({
   propTypes: {
